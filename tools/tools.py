@@ -38,7 +38,24 @@ def htl(ctx,command):
 @click.command(short_help="Creates a new expense")
 @click.argument('description',required=True)
 @click.argument('amount',required=True)
-def adde(description:str,amount:int):pass
+def adde(description:str,amount:float):
+    """
+    Creates a new expense and adds it to the database
+
+    Args:
+        description(str): the name of the expense
+        amount(float): the amount of the expense
+    
+    Returns:
+        None, must print a message to console for K/N
+    """
+    if not description.strip():
+        click.echo("ET --> The expense name is empty")
+        return
+    if not amount:
+        click("ET --> The expense amount is empty")
+    #add_expense() function from db manager must take the 2 inputs and maybe we need to add a category
+
 
 @click.command(short_help="Update the info of an expense")
 @click.argument()
