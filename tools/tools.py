@@ -34,9 +34,28 @@ def htl(ctx,command):
     else:
         click.echo(f"ET --> Error: Command '{command}' does not exist.")
 
-def adde():pass
+
+@click.command(short_help="Creates a new expense")
+@click.argument('description',required=True)
+@click.argument('amount',required=True)
+def adde(description:str,amount:int):pass
+
+@click.command(short_help="Update the info of an expense")
+@click.argument()
 def upde():pass
+
+@click.command(short_help="Delete an expense")
+@click.argument()
 def dele():pass
+
+@click.command(short_help="Shows all expenses")
+@click.argument()
 def alle():pass
+
+@click.command(short_help="Sum all expenses")
+@click.argument()
 def sume():pass
+
+@click.command(short_help="Sum all expenses of a month")
+@click.argument()
 def msme():pass
