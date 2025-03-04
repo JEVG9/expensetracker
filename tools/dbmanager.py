@@ -6,8 +6,7 @@ def connection():
     """Connects the app with the db file and creates/return the cursor"""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    return conn, cursor
+    return conn, conn.cursor()
 
 def add_table():
     """Create the table if there is no table on file"""
@@ -24,10 +23,15 @@ def add_table():
     conn.commit()
     conn.close()
 
-def add_expense(description,amount,category):
-    """Adds an expense to the db"""
-    conn,cursor = connection()
-    cursor.execute("INSERT INTO expenses (description,amount,category) VALUES(?,?,?)", (description,amount,category))
+def add_expense(description, amount, category, date=None):
+    """Adds an expense to the db. If no date is provided, uses current timestamp."""
+    conn, cursor = connection()
+    if date:
+        cursor.execute("INSERT INTO expenses (description, amount, category, date) VALUES (?, ?, ?, ?)", 
+                       (description, amount, category, date))
+    else:
+        cursor.execute("INSERT INTO expenses (description, amount, category) VALUES (?, ?, ?)", 
+                       (description, amount, category))
     conn.commit()
     conn.close()
 
@@ -44,13 +48,11 @@ def mod_expense(id,description,amount):
 
 def del_expense(id):
     """Deletes an expense using the id"""
-    conn,cursor = connection()
-    cursor.execute("""
-    DELETE FROM expenses
-    WHERE id = ?
-    """, (id))
+    conn, cursor = connection()
+    cursor.execute("DELETE FROM expenses WHERE id = ?", (id,))  # <- COMA añadida aquí
     conn.commit()
     conn.close()
+
 
 def get_expenses():
     """Returns all expenses in DB"""
@@ -60,6 +62,23 @@ def get_expenses():
     conn.close()
     return [dict(row) for row in rows]
 
-def sum_expenses():pass
-def sum_expenses_mont():pass
-
+def sum_expenses():
+    """Returns the sum of all expenses in DB"""
+    conn,cursor = connection()
+    cursor.execute("SELECT SUM(amount) FROM expenses")
+    total = cursor.fetchone()[0]
+    conn.close()
+    return total if total is not None else 0
+    
+def sum_expenses_month(year, month):
+    """Returns the sum of all expenses of a month"""
+    date_filter = f"{year}-{month:02d}"  # Asegura que el mes tenga dos dígitos
+    conn, cursor = connection()
+    cursor.execute("""
+        SELECT SUM(amount)
+        FROM expenses
+        WHERE strftime('%Y-%m', date) = ?
+    """, (date_filter,))
+    total = cursor.fetchone()[0]
+    conn.close()
+    return total if total is not None else 0
