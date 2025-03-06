@@ -53,8 +53,8 @@ def del_expense(id):
     conn.commit()
     conn.close()
 
-
 def get_expenses():
+    #pending expenses filtered by category
     """Returns all expenses in DB"""
     conn, cursor = connection()
     cursor.execute("SELECT * FROM expenses")
@@ -72,7 +72,7 @@ def sum_expenses():
     
 def sum_expenses_month(year, month):
     """Returns the sum of all expenses of a month"""
-    date_filter = f"{year}-{month:02d}"  # Asegura que el mes tenga dos dígitos
+    date_filter = f"{year}-{month:02d}"
     conn, cursor = connection()
     cursor.execute("""
         SELECT SUM(amount)
@@ -82,3 +82,6 @@ def sum_expenses_month(year, month):
     total = cursor.fetchone()[0]
     conn.close()
     return total if total is not None else 0
+
+
+###########################################
