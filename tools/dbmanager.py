@@ -8,6 +8,9 @@ def connection():
     conn.row_factory = sqlite3.Row
     return conn, conn.cursor()
 
+def clean_table():
+    pass
+
 def add_table():
     """Create the table if there is no table on file"""
     conn,cursor = connection()
@@ -35,14 +38,14 @@ def add_expense(description, amount, category, date=None):
     conn.commit()
     conn.close()
 
-def mod_expense(id,description,amount):
+def mod_expense(id,amount):
     """Modify an expense using the id"""
     conn,cursor = connection()
     cursor.execute("""
     UPDATE expenses
-    SET description = ?,amount= ?
+    SET amount= ?
     WHERE id = ?
-    """, (description, amount, id))
+    """, (amount, id))
     conn.commit()
     conn.close()
 
