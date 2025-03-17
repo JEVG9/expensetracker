@@ -65,10 +65,15 @@ def get_expenses():
     conn.close()
     return [dict(row) for row in rows]
 
-def sum_expenses():
+def sum_expenses(category:str | None):
     """Returns the sum of all expenses in DB"""
     conn,cursor = connection()
-    cursor.execute("SELECT SUM(amount) FROM expenses")
+    if category:
+        cursor.execute("""
+            SELECT SUM(amount) FROM expenses
+            WHERE category= ? """,(category,))
+    else:
+        cursor.execute("SELECT SUM(amount) FROM expenses")
     total = cursor.fetchone()[0]
     conn.close()
     return total if total is not None else 0

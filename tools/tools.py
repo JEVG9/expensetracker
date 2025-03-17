@@ -98,12 +98,25 @@ def dele(id:int):
 
 
 @click.command(short_help="Shows all expenses")
-@click.argument()
-def alle():pass
+@click.option('--cat',type=str,default=None,help="category name, no spaces")
+def alle(cat:str):
+    """
+    Shows a list of all expenses with all their info.
+    If a category is instroduced it shows all filtered expenses.
+
+    Args:
+        cat(str,optional): A str with the category name.
+    Returns:
+        None, must print the list or an error message.
+    """
+    print(dbmanager.get_expenses(cat))
 
 @click.command(short_help="Sum all expenses")
-@click.argument()
-def sume():pass
+@click.option('--m',type=int,default=None,help="01,02,..,12")
+def sume(m):
+    """
+    """
+    
 
 @click.command(short_help="Sum all expenses of a month")
 @click.argument()
