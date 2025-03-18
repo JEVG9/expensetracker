@@ -96,7 +96,6 @@ def dele(id:int):
     dbmanager.del_expense(id)
     click.echo(f"ET --> Fields can not be empty")
 
-
 @click.command(short_help="Shows all expenses")
 @click.option('--cat',type=str,default=None,help="category name, no spaces")
 def alle(cat:str):
@@ -113,11 +112,17 @@ def alle(cat:str):
 
 @click.command(short_help="Sum all expenses")
 @click.option('--m',type=int,default=None,help="01,02,..,12")
-def sume(m):
+@click.option('--y',type=int,default=None,help="1999,2001,..,2014")
+@click.option('--c',type=str,default=None,help="comida, transporte")
+def sume(m,y,c):
     """
-    """
-    
+    Sums all expenses and if needed can sum by category and
+    or by date.
 
-@click.command(short_help="Sum all expenses of a month")
-@click.argument()
-def msme():pass
+    Args:
+        c(str,optional): A str with the category name.
+        m(int,optional): An integer for trhe month.
+        y(int,optional): An integer for the year.
+    Returns:
+        None, must print the list or an error message.
+    """

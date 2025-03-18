@@ -65,31 +65,38 @@ def get_expenses():
     conn.close()
     return [dict(row) for row in rows]
 
-def sum_expenses(category:str | None):
-    """Returns the sum of all expenses in DB"""
-    conn,cursor = connection()
-    if category:
+def sum_expenses(category:str = None, year:int = None, month: int = None):
+    """Returns the sum of all expenses in DB, with optional filters for category and date."""
+    conn, cursor = connection()
+
+    if category and year and month:
+        date_filter = f"{year}-{month:02d}"
         cursor.execute("""
-            SELECT SUM(amount) FROM expenses
-            WHERE category= ? """,(category,))
+            SELECT SUM(amount)
+            FROM expenses
+            WHERE category = ? AND strftime('%Y-%m', date) = ?
+        """, (category, date_filter))
+    
+    elif year and month:
+        date_filter = f"{year}-{month:02d}"
+        cursor.execute("""
+            SELECT SUM(amount)
+            FROM expenses
+            WHERE strftime('%Y-%m', date) = ?
+        """, (date_filter,))
+    
+    elif category:
+        cursor.execute("""
+            SELECT SUM(amount)
+            FROM expenses
+            WHERE category = ?
+        """, (category,))
+    
     else:
         cursor.execute("SELECT SUM(amount) FROM expenses")
-    total = cursor.fetchone()[0]
-    conn.close()
-    return total if total is not None else 0
     
-def sum_expenses_month(year, month):
-    """Returns the sum of all expenses of a month"""
-    date_filter = f"{year}-{month:02d}"
-    conn, cursor = connection()
-    cursor.execute("""
-        SELECT SUM(amount)
-        FROM expenses
-        WHERE strftime('%Y-%m', date) = ?
-    """, (date_filter,))
     total = cursor.fetchone()[0]
     conn.close()
     return total if total is not None else 0
-
 
 ###########################################
