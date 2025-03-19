@@ -34,7 +34,6 @@ def htl(ctx,command):
     else:
         click.echo(f"ET --> Error: Command '{command}' does not exist.")
 
-
 @click.command(short_help="Creates a new expense")
 @click.argument('description',required=True)
 @click.argument('amount', type=float,required=True)
@@ -124,5 +123,15 @@ def sume(m,y,c):
         m(int,optional): An integer for trhe month.
         y(int,optional): An integer for the year.
     Returns:
-        None, must print the list or an error message.
+        None, must print the sum or an error message.
     """
+    total = dbmanager.sum_expenses(category=c, year=y, month=m)
+    if total is not None:
+        click.echo(f"Total expenses: ${total:.2f}")
+    else:
+        click.echo("No expenses found.")
+    
+@click.command(short_help="Downloads a CSV file with all expenses")
+@click.argument('name',type=str,required=True)
+def exp(name):
+    ...
